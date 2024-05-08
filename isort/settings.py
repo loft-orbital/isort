@@ -200,7 +200,8 @@ class _Config:
     force_sort_within_sections: bool = False
     lexicographical: bool = False
     group_by_package: bool = False
-    separate_top_level_packages: bool = False
+    separate_first_level_packages: FrozenSet[str] = frozenset()
+    separate_second_level_packages: FrozenSet[str] = frozenset()
     ignore_whitespace: bool = False
     no_lines_before: FrozenSet[str] = frozenset()
     no_inline_sort: bool = False
