@@ -173,6 +173,22 @@ def sorted_imports(
                     processed_section_output.append(section_line)
                 section_output = processed_section_output
 
+            if section in config.separate_third_level_packages:
+                previous_package_name: Optional[str] = None
+                processed_section_output: list[str] = []
+
+                for section_line in section_output:
+                    package_name: str = ".".join(section_line.split(" ")[1].split(".")[0:3])
+
+                    if previous_package_name is not None:
+                        if package_name != previous_package_name:
+                            processed_section_output.append("")
+                    previous_package_name = package_name
+                    processed_section_output.append(section_line)
+
+                section_output = processed_section_output
+
+
             if pending_lines_before or not no_lines_before:
                 output += [""] * config.lines_between_sections
 

@@ -202,6 +202,7 @@ class _Config:
     group_by_package: bool = False
     separate_first_level_packages: FrozenSet[str] = frozenset()
     separate_second_level_packages: FrozenSet[str] = frozenset()
+    separate_third_level_packages: FrozenSet[str] = frozenset()
     ignore_whitespace: bool = False
     no_lines_before: FrozenSet[str] = frozenset()
     no_inline_sort: bool = False
