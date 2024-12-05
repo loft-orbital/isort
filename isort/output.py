@@ -8,6 +8,7 @@ from isort.format import format_simplified
 from . import parse, sorting, wrap
 from .comments import add_to_line as with_comments
 from .identify import STATEMENT_DECLARATIONS
+from .place import module_with_reason
 from .settings import DEFAULT_CONFIG, Config
 
 
@@ -149,45 +150,28 @@ def sorted_imports(
                     section_output.append("")  # Empty line for black compatibility
                     section_output.append(section_comment_end)
 
-            if section in config.separate_first_level_packages:
-                previous_package_name: Optional[str] = None
+            if section in config.separate_packages:
+                group_keys: list[str] = []
                 processed_section_output: list[str] = []
                 for section_line in section_output:
-                    package_name: str = section_line.split(" ")[1].split(".")[0]
-                    if previous_package_name is not None:
-                        if package_name != previous_package_name:
+                    package_name: str = section_line.split(" ")[1]
+                    _, reason = module_with_reason(package_name, config)
+
+                    if "Matched configured known pattern" in reason:
+                        package_depth = len(reason.split(".")) - 1  # minus 1 for re.compile
+                        key = ".".join(package_name.split(".")[: package_depth + 1])
+                    else:
+                        key = package_name.split(".")[0]
+
+                    if key not in group_keys:
+                        if group_keys:
                             processed_section_output.append("")
-                    previous_package_name = package_name
-                    processed_section_output.append(section_line)
-                section_output = processed_section_output
 
-            if section in config.separate_second_level_packages:
-                previous_package_name: Optional[str] = None
-                processed_section_output: list[str] = []
-                for section_line in section_output:
-                    package_name: str = ".".join(section_line.split(" ")[1].split(".")[0:2])
-                    if previous_package_name is not None:
-                        if package_name != previous_package_name:
-                            processed_section_output.append("")
-                    previous_package_name = package_name
-                    processed_section_output.append(section_line)
-                section_output = processed_section_output
+                        group_keys.append(key)
 
-            if section in config.separate_third_level_packages:
-                previous_package_name: Optional[str] = None
-                processed_section_output: list[str] = []
-
-                for section_line in section_output:
-                    package_name: str = ".".join(section_line.split(" ")[1].split(".")[0:3])
-
-                    if previous_package_name is not None:
-                        if package_name != previous_package_name:
-                            processed_section_output.append("")
-                    previous_package_name = package_name
                     processed_section_output.append(section_line)
 
                 section_output = processed_section_output
-
 
             if pending_lines_before or not no_lines_before:
                 output += [""] * config.lines_between_sections
