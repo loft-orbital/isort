@@ -152,8 +152,13 @@ def sorted_imports(
 
             if section in config.separate_packages:
                 group_keys: list[str] = []
+                comments_above: list[str] = []
                 processed_section_output: list[str] = []
                 for section_line in section_output:
+                    if section_line.startswith("#"):
+                        comments_above.append(section_line)
+                        continue
+
                     package_name: str = section_line.split(" ")[1]
                     _, reason = module_with_reason(package_name, config)
 
@@ -168,6 +173,10 @@ def sorted_imports(
                             processed_section_output.append("")
 
                         group_keys.append(key)
+
+                    if comments_above:
+                        processed_section_output.extend(comments_above)
+                        comments_above = []
 
                     processed_section_output.append(section_line)
 
