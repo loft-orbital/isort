@@ -151,7 +151,7 @@ def sorted_imports(
                     section_output.append(section_comment_end)
 
             if section in config.separate_packages:
-                group_keys: list[str] = []
+                group_keys: set[str] = set()
                 comments_above: list[str] = []
                 processed_section_output: list[str] = []
                 for section_line in section_output:
@@ -172,7 +172,7 @@ def sorted_imports(
                         if group_keys:
                             processed_section_output.append("")
 
-                        group_keys.append(key)
+                        group_keys.add(key)
 
                     if comments_above:
                         processed_section_output.extend(comments_above)
