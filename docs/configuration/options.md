@@ -1049,7 +1049,6 @@ Separate packages within the listed sections with newlines.
 **Python & Config File Name:** separate_packages  
 **CLI Flags:** **Not Supported**
 
-
 ## Ignore Whitespace
 
 Tells isort to ignore whitespace differences when --check-only is being used.
